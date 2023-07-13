@@ -12,6 +12,8 @@ Solução em organização acessível para todos os estudantes. O Daily Schedule
 - [CSS](https://www.w3schools.com/css/)
 - [React](https://pt-br.reactjs.org/docs/lifting-state-up.html)
 
+[![Coverage Status](https://coveralls.io/repos/github/Esdryan/dailyschedule/badge.svg)](https://coveralls.io/github/Esdryan/dailyschedule)
+
 ### 📋 Documentação
 
 Você encontra a documentação do projeto no diretório [`docs`](https://github.com/tads-cnat/dailyschedule/tree/main/docs).
