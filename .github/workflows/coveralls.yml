@@ -1,0 +1,30 @@
+# .github/workflows/coveralls.yml
+name: Coveralls
+
+on:
+  push:
+    branches:
+      - teste-docker-compose
+  pull_request:
+    branches:
+      - teste-docker-compose
+
+jobs:
+  coveralls:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: pip install coveralls
+
+      - name: Run tests with coverage
+        run: coverage run --source='.' manage.py test
+
+      - name: Upload coverage report to Coveralls
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        run: coveralls --merge=coverage.xml

@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
+/* eslint-disable react/jsx-no-undef*/
+/* eslint-disable react/prop-types */
 import '../CriarCronograma/style.css'
 import PropTypes from 'prop-types';
 import LabelCriarCrono from './LabelFormCrono';

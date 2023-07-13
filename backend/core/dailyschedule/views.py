@@ -3,7 +3,7 @@ from django.http.response import JsonResponse
 #from django.contrib.auth import authenticate, login, logout
 
 from django.core.serializers import serialize
-from rest_framework.parsers import JSONParser 
+from rest_framework.parsers import JSONParser
 from rest_framework import status, viewsets
 
 from .utils import *
@@ -25,31 +25,36 @@ from .serializers import SerializadorCronograma, SerializadorTarefa, Serializado
 import datetime
 
 class CronogramaViewSet(viewsets.ModelViewSet):
+
+    #authentication_classes = [TokenAuthentication,]
+    #permission_classes = [IsAuthenticated]
+
     queryset = Cronograma.objects.all()
     serializer_class = SerializadorCronograma
     
     def get_queryset(self):
-        queryset = Cronograma.objects.all()        
+        queryset = Cronograma.objects.all()
         username = self.request.query_params.get('username')
-        id_aluno = self.request.query_params.get('id')        
+        id = self.request.query_params.get('id')
 
-        if username != None:
+        if username:
             queryset = queryset.filter(aluno__username=username)
-        if id_aluno != None:
-            queryset = queryset.filter(aluno__id=id_aluno)                  
+            #queryset = Cronograma.objects.filter(aluno_usuario=username)
+        
+        if id:
+            queryset = queryset.filter(aluno__id=id)           
+        
         return queryset
 
     @action(detail=False, methods=['get'])
     def editar(self, request):
-        id_aluno = self.request.query_params.get('id')   
-        print(request.query_params)
 
         idCrono = request.query.params.get('idCrono')
 
-        if idCrono:                    
+        if idCrono:        
             titulo = request.query_params.get('titulo')
             priv = request.query_params.get('priv')
-            cronograma = get_object_or_404(Cronograma, pk=id_aluno)
+            cronograma = get_object_or_404(Cronograma, pk=id)
             cronograma.titulo = titulo
             cronograma.privacidade = priv
             cronograma.save()
@@ -74,7 +79,6 @@ class CronogramaViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'], url_path='')
     def semana1(self,request,pk=None):
         inicio = self.getInicio()
-        print("inicio {}".format(inicio))
         semana1 = inicio + datetime.timedelta(days=7)
         fim = semana1 + datetime.timedelta(days=7)
         cronograma = get_object_or_404(Cronograma, pk=self.get_object().pk)
@@ -144,25 +148,23 @@ class AlunoViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['get'], url_path='')
     def alerta(self, request, pk):
-        print(pk + "<= PK")
         msgRetorno = 'Tarefa(s) Pendente(s): '
         now = datetime.datetime.now()
         aft = now + datetime.timedelta(days=1)
         aluno = Aluno.objects.all().first()
         tarefas_t = Tarefa.objects.filter(cronograma__aluno=pk).filter(data__gt=now).filter(data__lt=aft)
-        print(tarefas_t)
         tarefas = Tarefa.objects.filter(cronograma__aluno=pk).filter(data__gt=now).filter(data__lt=aft)
         if tarefas:
             cont = 0
             for tarefa in tarefas:
                 msgRetorno = msgRetorno + "\n["+ str(cont)+ "] " + tarefa.titulo
                 cont+=1
-            email = Email()            
+            email = Email()
+            #email.send('Tarefas Pendentes', msgRetorno, ['deividson.silva@escolar.ifrn.edu.br'])
             try:
                 email.send('Tarefas Pendentes', msgRetorno, ['deividson.silva@escolar.ifrn.edu.br'])
             except:
                 msgRetorno = 'Falha no envio'
-            print("Mensagem de retorno: "+msgRetorno)
         return Response({'message': msgRetorno}, status=status.HTTP_200_OK)
 
     @action (detail=False, methods=['post'], url_path='')
