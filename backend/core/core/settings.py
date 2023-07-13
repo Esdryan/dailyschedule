@@ -234,3 +234,8 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='your_password')
 EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
 EMAIL_PORT = config('EMAIL_PORT', default=587)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+<<<<<<< HEAD
+=======
+
+DJANGO_SETTINGS_MODULE = "test.settings"
+>>>>>>> 99-test-overview
